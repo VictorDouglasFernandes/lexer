@@ -1,3 +1,5 @@
+import sys
+
 numbers = ['0','1','2','3','4','5','6','7','8','9']
 chars = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','y','x','z',
 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','Y','X','Z']
@@ -14,11 +16,14 @@ def relationalOperator(char: str, current: str) -> bool:
 
     return char in firstOperators
 
-code = '''varibe
-23234
-v34214
-variable <=!<
-'''
+if len(sys.argv) < 2:
+    print("You should specify the file name")
+    sys.exit(1)
+
+filename = sys.argv[1]
+
+with open(filename, 'r') as file:
+    code = file.read()
 
 for line in code.split('\n'):
     remaining = line
@@ -62,7 +67,7 @@ for line in code.split('\n'):
         
         if len(variable) > len(number) and len(variable) > len(operator):
             
-            print(f'token={variable} type=str')
+            print(f'token={variable} type=var')
             index = remaining.find(variable)
             remaining = remaining[:index] + remaining[index + len(variable):]
         elif len(number) > len(variable) and len(number) > len(operator):
@@ -80,5 +85,5 @@ for line in code.split('\n'):
             print(f'no match: {remaining}')
             break
         
-        if len(remaining) > 0:
-            print(f'remaining: {remaining}')
+        # if len(remaining) > 0:
+            # print(f'remaining: {remaining}')
