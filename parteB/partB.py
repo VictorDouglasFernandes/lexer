@@ -22,6 +22,11 @@ keywords = {
     'print': 'PRINT'
 }
 
+symbol_table = {
+    'lexemas': set(),  # Armazena identificadores
+    'keywords': list(keywords.keys())  # Armazena palavras-chave
+}
+
 # Lista de tokens
 tokens = [
     'ID', 'NUM',
@@ -50,6 +55,9 @@ t_ignore = ' \t'
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
+    # Verifica se é palavra-chave ou ID
+    if t.value not in symbol_table['keywords']:
+        symbol_table['lexemas'].add(t.value)  # Adiciona à tabela
     t.type = keywords.get(t.value, 'ID')
     return t
 
@@ -85,13 +93,14 @@ if __name__ == "__main__":
         
         lexer.input(data)
         tokens = []
+        symbol_table['lexemas'].clear()  # Limpa a tabela para cada execução
         
         while True:
             tok = lexer.token()
             if not tok: 
                 break
                 
-            # Formata a saída conforme especificado
+            # Formata a saída dos tokens
             if tok.type == 'ID':
                 tokens.append('id')
             elif tok.type == 'NUM':
@@ -103,7 +112,11 @@ if __name__ == "__main__":
             else:
                 tokens.append(tok.value)
         
-        print(tokens)
+        # Saída dos tokens e tabela de símbolos
+        print("Tokens:", tokens)
+        print("\nTabela de Símbolos:")
+        print("Palavras-chave:", symbol_table['keywords'])
+        print("Identificadores:", list(symbol_table['lexemas']))
         
     except FileNotFoundError:
         print(f"Erro: Arquivo {sys.argv[1]} não encontrado")

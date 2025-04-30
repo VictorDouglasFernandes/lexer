@@ -13,9 +13,9 @@ Este documento explica como instalar dependências e executar o analisador léxi
    ```bash
    cd /caminho/para/lexer
    ```
-2. Instale o PLY (caso haja `requirements.txt`, use `pip install -r requirements.txt`):
+2. Instale o PLY (use `pip install -r requirements.txt`):
    ```bash
-   pip install ply
+   pip install -r requirements.txt
    ```
 
 ## Execução

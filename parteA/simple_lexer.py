@@ -9,20 +9,22 @@ Integrantes:
 
 import sys
 
+# Palavras-chave pré-definidas
+keywords = ['if', 'else', 'def', 'return', 'print', 'int']
+symbol_table = {k: 'keyword' for k in keywords}  # Tabela de símbolos inicializada com keywords
+
+# Caracteres válidos
 numbers = ['0','1','2','3','4','5','6','7','8','9']
 chars = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','y','x','z',
-'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','Y','X','Z']
-firstOperators = ['>','<','=','>','<','!']
+         'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','Y','X','Z']
+firstOperators = ['>','<','=','!']
 secondOperators = ['=']
 
 def relationalOperator(char: str, current: str) -> bool:
     if len(current) >= 2:
         return False
     if len(current) == 1:
-        if current in ['>','<','!'] and char in secondOperators:
-            return True
-        return False
-
+        return (current in ['>','<','!'] and char in secondOperators)
     return char in firstOperators
 
 if len(sys.argv) < 2:
@@ -34,65 +36,70 @@ filename = sys.argv[1]
 with open(filename, 'r') as file:
     code = file.read()
 
+tokens = []  # Lista para armazenar os tokens
+
 for line in code.split('\n'):
     remaining = line
     while len(remaining) > 0:
-        
         if remaining[0] == ' ':
-            index = remaining.find(' ')
-            remaining = remaining[:index] + remaining[index + len(' '):]
+            remaining = remaining[1:]
             continue
         
-        variable = ''
-        number = ''
-        operator = ''
-        
-        stopVariable = False
-        stopNumber = False
-        stopOperator = False
-        
+        variable, number, operator = '', '', ''
+        stop_var, stop_num, stop_op = False, False, False
+
         for char in remaining:
-            hasMatch = False
-            if (not stopNumber and char in numbers):
+            has_match = False
+
+            # Reconhece números
+            if not stop_num and char in numbers:
                 number += char
-                hasMatch = True
+                has_match = True
             else:
-                stopNumber = True
-            
-            if (not stopVariable and ((variable == '' and char in chars) or (len(variable) > 0 and (char in chars or char in numbers)))):
+                stop_num = True
+
+            # Reconhece identificadores/palavras-chave
+            if not stop_var and ((variable == '' and char in chars) or (variable and (char in chars + numbers))):
                 variable += char
-                hasMatch = True
+                has_match = True
             else:
-                stopVariable = True
+                stop_var = True
 
-            if (not stopOperator and relationalOperator(char, operator)):
+            # Reconhece operadores relacionais
+            if not stop_op and relationalOperator(char, operator):
                 operator += char
-                hasMatch = True
+                has_match = True
             else:
-                stopOperator = True
-            
-            if not hasMatch:
-                break
-        
-        if len(variable) > len(number) and len(variable) > len(operator):
-            
-            print(f'token={variable} type=var')
-            index = remaining.find(variable)
-            remaining = remaining[:index] + remaining[index + len(variable):]
-        elif len(number) > len(variable) and len(number) > len(operator):
-            
-            print(f'token={number} type=int')
-            index = remaining.find(number)
-            remaining = remaining[:index] + remaining[index + len(number):]
-        elif len(operator) > len(variable) and len(operator) > len(variable):
+                stop_op = True
 
-            print(f'token={operator} type=operator')
-            index = remaining.find(operator)
-            remaining = remaining[:index] + remaining[index + len(operator):]
-        else:
-            # No match
-            print(f'no match: {remaining}')
-            break
-        
-        # if len(remaining) > 0:
-            # print(f'remaining: {remaining}')
+            if not has_match:
+                break
+
+        # Determina qual token tem prioridade
+        max_len = max(len(variable), len(number), len(operator))
+        if max_len == 0:
+            print(f"Erro léxico: caractere inválido '{remaining[0]}' na linha '{line}'")
+            remaining = remaining[1:]
+            continue
+
+        if len(variable) == max_len:
+            # Verifica se é palavra-chave
+            token_type = 'keyword' if variable in keywords else 'ID'
+            if variable not in symbol_table and token_type == 'ID':
+                symbol_table[variable] = 'ID'  # Adiciona novo ID à tabela
+            tokens.append((variable, token_type))
+            remaining = remaining[len(variable):]
+        elif len(number) == max_len:
+            tokens.append((number, 'NUM'))
+            remaining = remaining[len(number):]
+        elif len(operator) == max_len:
+            tokens.append((operator, 'RELOP'))
+            remaining = remaining[len(operator):]
+
+print("\nLista de Tokens:")
+for token, tipo in tokens:
+    print(f"Token: {token} \t Tipo: {tipo}")
+
+print("\nTabela de Símbolos:")
+for lexema, tipo in symbol_table.items():
+    print(f"Lexema: {lexema} \t Tipo: {tipo}")
