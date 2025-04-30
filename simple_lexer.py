@@ -1,3 +1,12 @@
+"""
+Analisador Léxico Parte A
+Integrantes: 
+- Gustavo Cortez de brito (21202331)
+- Víctor Douglas Fernandes (21204918)
+- João Vitor Duarte Domingos (21203405)
+- Manuela Schmitz (20102278)
+"""
+
 import sys
 
 numbers = ['0','1','2','3','4','5','6','7','8','9']
