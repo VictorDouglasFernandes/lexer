@@ -1,6 +1,6 @@
 import sys
 from parteB.partB import lexer
-from .parsing_table import parsing_table
+from .parsing_table_2 import parsing_table
 
 
 EOF = '$'

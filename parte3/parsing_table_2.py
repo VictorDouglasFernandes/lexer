@@ -1,8 +1,21 @@
 # Tabela de Análise Preditiva para a gramática LSI-2025-1 (LL-1)
-# Derivada do trabalho da Parte 2.
+# Versão corrigida, incluindo o símbolo inicial aumentado 'S'.
 # As chaves (terminais) devem corresponder exatamente aos tokens gerados pelo seu léxico.
 
 parsing_table = {
+    # A entrada para 'S' direciona o parser para o símbolo inicial original 'MAIN'
+    # e garante que a análise só termina com o marcador de fim de arquivo '$'.
+    'S': {
+        'def': ['MAIN', '$'],
+        'int': ['MAIN', '$'],
+        'id': ['MAIN', '$'],
+        '{': ['MAIN', '$'],
+        ';': ['MAIN', '$'],
+        'print': ['MAIN', '$'],
+        'return': ['MAIN', '$'],
+        'if': ['MAIN', '$'],
+        '$': ['MAIN', '$']
+    },
     'MAIN': {
         'def': ['FLIST'],
         'int': ['STMT'],
@@ -49,8 +62,7 @@ parsing_table = {
         ';': []  # VARLIST' -> ε
     },
     'ATRIBST': {
-        # O PDF de vocês usa ':=', mas a gramática original usa '='.
-        # Use o token que seu léxico realmente gera. Vou usar '='.
+        # Assumindo que seu léxico gera '=' para atribuição
         'id': ['id', '=', "ATRIBST'"]
     },
     "ATRIBST'": {
@@ -60,8 +72,7 @@ parsing_table = {
     },
     'ATRIBST_ID_SUFFIX': {
         '(': ['(', 'PARLISTCALL', ')'],
-        # Esta é a regra para quando ATRIBST_ID_SUFFIX -> EXPR (sem FCALL)
-        # Ela é escolhida com base no FOLLOW set.
+        # Regra para quando o sufixo é uma expressão (baseado no FOLLOW)
         '*': ["TERM'", "NUMEXPR'", "EXPR'"],
         '/': ["TERM'", "NUMEXPR'", "EXPR'"],
         '+': ["TERM'", "NUMEXPR'", "EXPR'"],
@@ -72,7 +83,8 @@ parsing_table = {
         '>=': ["TERM'", "NUMEXPR'", "EXPR'"],
         '==': ["TERM'", "NUMEXPR'", "EXPR'"],
         '!=': ["TERM'", "NUMEXPR'", "EXPR'"],
-        ';': ["TERM'", "NUMEXPR'", "EXPR'"]
+        ';': ["TERM'", "NUMEXPR'", "EXPR'"],
+        ')': ["TERM'", "NUMEXPR'", "EXPR'"]
     },
     'PARLISTCALL': {
         'id': ['id', "PARLISTCALL'"],
@@ -97,9 +109,9 @@ parsing_table = {
     },
     "IFSTMT'": {
         'else': ['else', '{', 'STMT', '}'],
-        # IFSTMT' -> ε, baseado no FOLLOW set de IFSTMT
-        'def': [], 'int': [], 'id': [], '{': [], ';': [],
-        'print': [], 'return': [], 'if': [], '}': [], '$': []
+        # IFSTMT' -> ε, baseado no FOLLOW set de IFSTMT (que é o mesmo de STMT)
+        'int': [], 'id': [], '{': [], ';': [], 'print': [],
+        'return': [], 'if': [], '}': [], '$': []
     },
     'STMTLIST': {
         'int': ['STMT', "STMTLIST'"],
