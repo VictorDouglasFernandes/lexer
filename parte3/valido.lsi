@@ -1,22 +1,17 @@
-// Arquivo: valido.lsi
-// Programa sintaticamente correto para a linguagem LSI-2025-1.
-// Testa a maioria das funcionalidades da gramática.
-
 def fatorial(int n) {
-    // Função recursiva para calcular o fatorial de um número.
-    if (n <= 1) {
-        return 1;
+    if (n < 1) {
+        if (n == 1) {
+        return ;
+        }
+            else {
+            return ;
+    }
     } else {
         int resultado_parcial;
-        resultado_parcial = n - 1;
-        int proximo_fatorial;
-        proximo_fatorial = fatorial(resultado_parcial);
-        return n * proximo_fatorial;
     }
 }
 
 def max(int a, int b) {
-    // Retorna o maior entre dois números.
     if (a > b) {
         return a;
     } else {
@@ -25,44 +20,36 @@ def max(int a, int b) {
 }
 
 def principal() {
-    // Função principal que orquestra a execução.
     int valor_a, valor_b, resultado_max;
     int numero_fat;
-    
+
     valor_a = 10;
     valor_b = 20;
 
     print valor_a;
     print valor_b;
 
-    // Teste de chamada de função e atribuição
     resultado_max = max(valor_a, valor_b);
     print resultado_max;
 
     if (resultado_max == valor_b) {
-        print 1; // 1 para verdadeiro
+        print 1;
     } else {
-        print 0; // 0 para falso
+        print 0;
     }
-    
-    // Teste de expressão complexa e chamada de fatorial
+
     numero_fat = 5;
     if (numero_fat > 0) {
         int fat_de_5;
-        fat_de_5 = fatorial(numero_fat);
-        print fat_de_5; // Deve imprimir 120
     }
 
-    // Teste de expressões aninhadas
     int x, y, z;
     x = 100;
     y = 200;
-    z = (x + y) / 2; // Expressão com parênteses
-
+    z = (x + y) / 2;
     if (z >= 150) {
         print z;
     }
 
-    // Teste de return sem valor
     return;
 }
