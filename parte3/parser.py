@@ -1,11 +1,10 @@
 import sys
+import importlib
 from parteB.partB import lexer
-from .parsing_table import parsing_table
-
 
 EOF = '$'
 
-def parse(tokens):
+def parse(tokens, parsing_table):
     stack = ['S']
     tokens.append(EOF)
     index = 0
@@ -40,21 +39,21 @@ def parse(tokens):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Uso: python parser.py <arquivo.lsi>")
+    if len(sys.argv) != 3:
+        print("Uso: python -m parte3.parser <arquivo.lsi> <modulo_parsing_table>")
+        print("Exemplo: python -m parte3.parser parteB/example_correct.lsi parte3.parsing_table")
         sys.exit(1)
 
     filename = sys.argv[1]
+    parsing_table_module_name = sys.argv[2]
+
+    parsing_table_module = importlib.import_module(parsing_table_module_name)
+    parsing_table = parsing_table_module.parsing_table
 
     with open(filename, 'r', encoding='utf-8') as file:
         data = file.read()
 
     lexer.input(data)
-    # while True:
-    #     tok = lexer.token()
-    #     if not tok:
-    #         break
-    #     print(f'{tok.type}: {tok.value}')
     tokens = []
 
     while True:
@@ -72,4 +71,4 @@ if __name__ == '__main__':
             tokens.append(tok.value)
 
     print("Tokens:", tokens)
-    parse(tokens)
+    parse(tokens, parsing_table)
