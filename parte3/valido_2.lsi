@@ -1,0 +1,16 @@
+def fatorial(int n) {
+    if (n <= 1) {
+        int um;
+        um = 1;
+        return um;
+    } else {
+        int resultado_parcial;
+        resultado_parcial = n - 1;
+        int proximo_fatorial;
+        proximo_fatorial = fatorial(resultado_parcial);
+        
+        int resultado_final;
+        resultado_final = n * proximo_fatorial;
+        return resultado_final;
+    }
+}
