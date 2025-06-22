@@ -50,11 +50,11 @@ if __name__ == '__main__':
         data = file.read()
 
     lexer.input(data)
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break
-        print(f'{tok.type}: {tok.value}')
+    # while True:
+    #     tok = lexer.token()
+    #     if not tok:
+    #         break
+    #     print(f'{tok.type}: {tok.value}')
     tokens = []
 
     while True:
