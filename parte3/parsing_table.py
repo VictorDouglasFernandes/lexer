@@ -1,10 +1,6 @@
 # Tabela de Análise Preditiva para a gramática LSI-2025-1 (LL-1)
-# Versão corrigida, incluindo o símbolo inicial aumentado 'S'.
-# As chaves (terminais) devem corresponder exatamente aos tokens gerados pelo seu léxico.
 
 parsing_table = {
-    # A entrada para 'S' direciona o parser para o símbolo inicial original 'MAIN'
-    # e garante que a análise só termina com o marcador de fim de arquivo '$'.
     'S': {
         'def': ['MAIN', '$'],
         'int': ['MAIN', '$'],
@@ -81,16 +77,15 @@ parsing_table = {
         '>=': ["TERM'", "NUMEXPR'", "EXPR'"],
         '==': ["TERM'", "NUMEXPR'", "EXPR'"],
         '!=': ["TERM'", "NUMEXPR'", "EXPR'"],
-        ';': ["TERM'", "NUMEXPR'", "EXPR'"],
-        ')': ["TERM'", "NUMEXPR'", "EXPR'"]
+        ';': ["TERM'", "NUMEXPR'", "EXPR'"]
     },
     'PARLISTCALL': {
         'id': ['id', "PARLISTCALL'"],
-        ')': []
+        ')': []  # PARLISTCALL -> ε
     },
     "PARLISTCALL'": {
-        'id': ['id', "PARLISTCALL'"],
-        ')': []
+        'id' : ['id', "PARLISTCALL'"],
+        ')': []  # PARLISTCALL' -> ε
     },
     'PRINTST': {
         'print': ['print', 'EXPR']
@@ -107,14 +102,24 @@ parsing_table = {
     },
     "IFSTMT'": {
         'else': ['else', '{', 'STMT', '}'],
-        # IFSTMT' -> ε, baseado no FOLLOW set de IFSTMT (que é o mesmo de STMT)
-        'int': [], 'id': [], '{': [], ';': [], 'print': [],
-        'return': [], 'if': [], '}': [], '$': []
+        'int': [],
+        'id': [],
+        '{': [],
+        ';': [],
+        'print': [],
+        'return': [],
+        'if': [],
+        '}': [],
+        '$': []
     },
     'STMTLIST': {
-        'id': ['STMT', "STMTLIST'"], 'int': ['STMT', "STMTLIST'"], '{': ['STMT', "STMTLIST'"],
-        ';': ['STMT', "STMTLIST'"], 'print': ['STMT', "STMTLIST'"], 'return': ['STMT', "STMTLIST'"],
-        'if': ['STMT', "STMTLIST'"]
+        'int': ['STMT', "STMTLIST'"],
+        'id': ['STMT', "STMTLIST'"],
+        'print': ['STMT', "STMTLIST'"],
+        'return': ['STMT', "STMTLIST'"],
+        'if': ['STMT', "STMTLIST'"],
+        '{': ['STMT', "STMTLIST'"],
+        ';': ['STMT', "STMTLIST'"]
     },
     "STMTLIST'": {
         'int': ['STMT', "STMTLIST'"],
@@ -138,7 +143,6 @@ parsing_table = {
         '>=': ['>=', 'NUMEXPR'],
         '==': ['==', 'NUMEXPR'],
         '!=': ['!=', 'NUMEXPR'],
-        # EXPR' -> ε, baseado no FOLLOW set de EXPR
         ';': [],
         ')': []
     },
@@ -150,9 +154,14 @@ parsing_table = {
     "NUMEXPR'": {
         '+': ['+', 'TERM', "NUMEXPR'"],
         '-': ['-', 'TERM', "NUMEXPR'"],
-        # NUMEXPR' -> ε, baseado no FOLLOW set de NUMEXPR
-        '<': [], '<=': [], '>': [], '>=': [], '==': [], '!=': [],
-        ';': [], ')': []
+        '<': [],
+        '<=': [],
+        '>': [],
+        '>=': [],
+        '==': [],
+        '!=': [],
+        ';': [],
+        ')': []
     },
     'TERM': {
         'num': ['FACTOR', "TERM'"],
@@ -162,9 +171,16 @@ parsing_table = {
     "TERM'": {
         '*': ['*', 'FACTOR', "TERM'"],
         '/': ['/', 'FACTOR', "TERM'"],
-        # TERM' -> ε, baseado no FOLLOW set de TERM
-        '+': [], '-': [], '<': [], '<=': [], '>': [], '>=': [],
-        '==': [], '!=': [], ';': [], ')': []
+        '+': [],
+        '-': [],
+        '<': [],
+        '<=': [],
+        '>': [],
+        '>=': [],
+        '==': [],
+        '!=': [],
+        ';': [],
+        ')': []
     },
     'FACTOR': {
         'num': ['num'],

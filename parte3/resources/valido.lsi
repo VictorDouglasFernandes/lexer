@@ -1,19 +1,16 @@
 def fatorial(int n) {
     if (n < 1) {
-        if (n == 1) {
         return ;
-        }
-            else {
-            return ;
     }
-    } else {
+    else {
         int resultado_parcial;
     }
 }
 def max(int a, int b) {
     if (a > b) {
         return a;
-    } else {
+    }
+    else {
         return b;
     }
 }
@@ -28,7 +25,8 @@ def principal() {
     print resultado_max;
     if (resultado_max == valor_b) {
         print 1;
-    } else {
+    }
+    else {
         print 0;
     }
     numero_fat = 5;
@@ -42,5 +40,22 @@ def principal() {
     if (z >= 150) {
         print z;
     }
+    int contador;
+    contador = 0;
+    if (contador < 10) {
+        contador = contador + 1;
+    }
+    if (contador == 10) {
+        print contador;
+    }
+    else {
+        print 0;
+    }
+    int resultado_final;
+    resultado_final = 0;
+    if (resultado_final < 5) {
+        resultado_final = resultado_final + 5;
+    }
+    print resultado_final;
     return;
 }

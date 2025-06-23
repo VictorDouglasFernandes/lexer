@@ -1,0 +1,16 @@
+def verifica_valor(int x) {
+    if (x 10) {
+        print 1;
+    }
+    else {
+        print 0;
+    }
+    int y;
+    y = 5;
+    if (y < 3) {
+        print y;
+    }
+    else {
+        print 3;
+    }
+}

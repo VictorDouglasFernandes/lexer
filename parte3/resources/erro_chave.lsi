@@ -1,0 +1,15 @@
+def processa_lista(int n) {
+    int i, soma, media;
+    soma = 0;
+    i = 0;
+    if (i < n) {
+        soma = soma + i;
+    }
+    media = soma / n;
+    if (media > 10) {
+        print media;
+    else {
+        print 0;
+    }
+    return;
+}
