@@ -53,6 +53,11 @@ literals = ['=', '+', '-', '*', '/', '(', ')', '{', '}', ',', ';']
 # Expressões regulares
 t_ignore = ' \t'
 
+def t_COMMENT(t):
+    r'//.*'
+    # Ignora comentários de linha única
+    pass
+
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     # Verifica se é palavra-chave ou ID
