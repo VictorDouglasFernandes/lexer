@@ -1,0 +1,13 @@
+def calcula_media() {
+    int nota1, nota2, media;
+    nota1 = 10;
+    nota2 = 8
+    media = (nota1 + nota2) / 2;
+    if (media >= 6) {
+        print 1;
+    } else {
+        print 0;
+    }
+    print media;
+    return;
+}

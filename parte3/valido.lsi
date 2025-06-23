@@ -10,7 +10,6 @@ def fatorial(int n) {
         int resultado_parcial;
     }
 }
-
 def max(int a, int b) {
     if (a > b) {
         return a;
@@ -18,31 +17,24 @@ def max(int a, int b) {
         return b;
     }
 }
-
 def principal() {
     int valor_a, valor_b, resultado_max;
     int numero_fat;
-
     valor_a = 10;
     valor_b = 20;
-
     print valor_a;
     print valor_b;
-
-    resultado_max = max(valor_a, valor_b);
+    resultado_max = max(valor_a);
     print resultado_max;
-
     if (resultado_max == valor_b) {
         print 1;
     } else {
         print 0;
     }
-
     numero_fat = 5;
     if (numero_fat > 0) {
         int fat_de_5;
     }
-
     int x, y, z;
     x = 100;
     y = 200;
@@ -50,6 +42,5 @@ def principal() {
     if (z >= 150) {
         print z;
     }
-
     return;
 }

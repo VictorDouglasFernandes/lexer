@@ -6,7 +6,7 @@ from collections import defaultdict
 EOF = '$'
 sync_tokens = [';', '}', 'def', 'if', 'else', 'return', 'print']
 
-def parse(tokens, parsing_table):
+def parse(tokens, parsing_table, linhas_arquivo, tokens_por_linha):
     stack = ['S']
     tokens.append(('$', '$', -1))  # (lexema, tipo, linha)
     index = 0
@@ -28,7 +28,9 @@ def parse(tokens, parsing_table):
                     if symbol not in ['', 'ε']:
                         stack.append(symbol)
             else:
-                print(f"✘ Erro na linha {lineno}: token inesperado '{lexeme}' ({token_type}) em contexto '{top}'")
+                print(f"\n✘ Erro na linha {lineno}: token inesperado '{lexeme}' ({token_type}) em contexto '{top}'")
+                print(f"Linha {lineno}: {linhas_arquivo[lineno - 1].strip()}")
+                print("  ➜", ' '.join(tokens_por_linha[lineno]))
                 had_error = True
 
                 # Modo pânico simples
@@ -39,7 +41,9 @@ def parse(tokens, parsing_table):
         elif top == 'ε' or top == '':
             continue
         else:
-            print(f"✘ Erro na linha {lineno}: esperado '{top}', mas encontrado '{lexeme}' ({token_type})")
+            print(f"\n✘ Erro na linha {lineno}: esperado '{top}', mas encontrado '{lexeme}' ({token_type})")
+            print(f"Linha {lineno}: {linhas_arquivo[lineno - 1].strip()}")
+            print("  ➜", ' '.join(tokens_por_linha[lineno]))
             had_error = True
 
             while index < len(tokens) and tokens[index][1] not in sync_tokens and tokens[index][0] not in sync_tokens:
@@ -48,10 +52,10 @@ def parse(tokens, parsing_table):
                 stack.pop()
 
     if not had_error and index == len(tokens):
-        print("✔ Análise sintática concluída com sucesso.")
+        print("\n✔ Análise sintática concluída com sucesso.")
         return True
     else:
-        print("⚠ Análise concluída com erros.")
+        print("\n⚠ Análise concluída com erros.")
         return False
 
 
@@ -63,16 +67,15 @@ if __name__ == '__main__':
     filename = sys.argv[1]
     parsing_table_module = sys.argv[2]
 
-    # Importa tabela de parsing
     parsing = importlib.import_module(parsing_table_module)
     parsing_table = parsing.parsing_table
 
     with open(filename, 'r', encoding='utf-8') as file:
-        data = file.read()
+        linhas_arquivo = file.readlines()
 
-    lexer.input(data)
+    lexer.input(''.join(linhas_arquivo))
     tokens = []
-    linhas_tokens = defaultdict(list)
+    tokens_por_linha = defaultdict(list)
 
     while True:
         tok = lexer.token()
@@ -89,14 +92,7 @@ if __name__ == '__main__':
             tipo = tok.value
 
         tokens.append((tok.value, tipo, tok.lineno))
-        linhas_tokens[tok.lineno].append(f"[{tok.type}: '{tok.value}']")
-
-    print("Tokens por linha:\n")
-    for idx, linha in enumerate(data.splitlines(), start=1):
-        print(f"Linha {idx}: {linha}")
-        if idx in linhas_tokens:
-            print("  ➜", ' '.join(linhas_tokens[idx]))
-        print()
+        tokens_por_linha[tok.lineno].append(f"[{tok.type}: '{tok.value}']")
 
     print("Tokens para análise sintática:", [t[1] for t in tokens])
-    parse(tokens, parsing_table)
+    parse(tokens, parsing_table, linhas_arquivo, tokens_por_linha)
