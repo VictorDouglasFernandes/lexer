@@ -31,7 +31,18 @@ def parse(tokens, parsing_table, linhas_arquivo, tokens_por_linha):
             else:
                 had_error = True
                 if top in ["TERM'", "NUMEXPR'", "EXPR'", 'ATRIBST_ID_SUFFIX']:
-                    print(f"\n✘ Erro na linha {prev_lineno}: esperado ';' antes de '{lexeme}' ({token_type})")
+                    if token_type in ['num', 'id', '(', ')']:
+                        print(
+                            f"\n✘ Erro na linha {prev_lineno}: operador ou separador esperado antes de '{lexeme}' ({token_type})")
+                    elif token_type == ';':
+                        print(f"\n✘ Erro na linha {prev_lineno}: expressão incompleta antes de ';'")
+                    elif token_type == ')':
+                        print(f"\n✘ Erro na linha {prev_lineno}: parêntese de fechamento inesperado")
+                    elif token_type == '}':
+                        print(f"\n✘ Erro na linha {prev_lineno}: chave de fechamento inesperada")
+                    else:
+                        print(f"\n✘ Erro na linha {prev_lineno}: erro de expressão próximo a '{lexeme}' ({token_type})")
+
                     print(f"Linha {prev_lineno}: {linhas_arquivo[prev_lineno - 1].strip()}")
                     print("  ➜", ' '.join(tokens_por_linha[prev_lineno]))
                 else:
