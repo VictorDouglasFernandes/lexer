@@ -30,20 +30,28 @@ def parse(tokens, parsing_table, linhas_arquivo, tokens_por_linha):
                         stack.append(symbol)
             else:
                 had_error = True
-                if top in ["TERM'", "NUMEXPR'", "EXPR'", 'ATRIBST_ID_SUFFIX']:
+                # Se estamos em TERM' ou NUMEXPR' e o token inesperado é num, id ou (, priorizar erro de operador relacional
+                if (top in ["TERM'", "NUMEXPR'"] and token_type in ["num", "id", "("]):
+                    print(f"\n✘ Erro na linha {lineno}: esperado operador relacional (<, <=, >, >=, ==, !=) antes de '{lexeme}' ({token_type})")
+                    print(f"Linha {lineno}: {linhas_arquivo[lineno - 1].strip()}")
+                    print("  ➜", ' '.join(tokens_por_linha[lineno]))
+                    break
+                elif top == "EXPR'":
+                    print(f"\n✘ Erro na linha {lineno}: esperado operador relacional (<, <=, >, >=, ==, !=) antes de '{lexeme}' ({token_type})")
+                    print(f"Linha {lineno}: {linhas_arquivo[lineno - 1].strip()}")
+                    print("  ➜", ' '.join(tokens_por_linha[lineno]))
+                    break
+                elif top in ["TERM'", "NUMEXPR'", 'ATRIBST_ID_SUFFIX']:
                     print(f"\n✘ Erro na linha {prev_lineno}: esperado ';' antes de '{lexeme}' ({token_type})")
                     print(f"Linha {prev_lineno}: {linhas_arquivo[prev_lineno - 1].strip()}")
                     print("  ➜", ' '.join(tokens_por_linha[prev_lineno]))
+                    break
                 else:
                     print(f"\n✘ Erro na linha {lineno}: token inesperado '{lexeme}' ({token_type}) em contexto '{top}'")
                     print(f"Linha {lineno}: {linhas_arquivo[lineno - 1].strip()}")
                     print("  ➜", ' '.join(tokens_por_linha[lineno]))
+                    break
 
-                # Modo pânico simples
-                while index < len(tokens) and tokens[index][1] not in sync_tokens and tokens[index][0] not in sync_tokens:
-                    index += 1
-                while stack and (stack[-1] not in parsing_table or token_type not in parsing_table[stack[-1]]):
-                    stack.pop()
         elif top == 'ε' or top == '':
             continue
         else:
@@ -51,11 +59,6 @@ def parse(tokens, parsing_table, linhas_arquivo, tokens_por_linha):
             print(f"Linha {lineno}: {linhas_arquivo[lineno - 1].strip()}")
             print("  ➜", ' '.join(tokens_por_linha[lineno]))
             had_error = True
-
-            while index < len(tokens) and tokens[index][1] not in sync_tokens and tokens[index][0] not in sync_tokens:
-                index += 1
-            while stack and (stack[-1] not in parsing_table or token_type not in parsing_table[stack[-1]]):
-                stack.pop()
 
     if not had_error and index == len(tokens):
         print("\n✔ Análise sintática concluída com sucesso.")
